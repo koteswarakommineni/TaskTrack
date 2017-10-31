@@ -1,0 +1,50 @@
+@*
+ * This template takes a single argument, a String containing a
+ * message to display.
+ *@
+@(tasks: List[Task])
+
+@*
+ * Call the `main` template with two arguments. The first
+ * argument is a `String` with the title of the page, the second
+ * argument is an `Html` object containing the body of the page.
+ *@
+@main("Task Tracker") {
+
+    @*
+     * Get an `Html` object by calling the built-in Play welcome
+     * template and passing a `String` message.
+     *@
+    @* @play20.welcome(message, style = "Scala") *@
+
+    <h2>Task Tracker</h2>
+
+    <div>
+        <form action="@routes.TaskController.newTask()" method="post">
+            <input type="text" name="taskName" placeholder="Add a new Task" required>
+            <input type="submit" value="Add">
+        </form>
+    </div>
+    <div>
+        <ul>
+            @tasks.map { task =>
+                <li>
+                    @task.name <button onclick="deleteTask (@task.id);">Remove</button>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <script>
+        function deleteTask (id) {
+            var req = new XMLHttpRequest();
+            req.open("delete", "/tasks/" + id);
+            req.onload = function(e) {
+                if(req.status = 200) {
+                    document.location.reload(true);
+                }
+            };
+            req.send();
+        }
+    </script>
+}
